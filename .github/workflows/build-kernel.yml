@@ -22,7 +22,7 @@ env:
   CLANG_BRANCH: mirror-goog-main-llvm-toolchain-source
   RSU_REPO: ReSukiSU/ReSukiSU
   # 构建时主机标识：内核 banner 会显示为 build@114514
-  BUILD_USER: build
+  BUILD_USER: Kbuild
   BUILD_HOST: '114514'
 
 jobs:
