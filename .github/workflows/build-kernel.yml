@@ -21,6 +21,9 @@ env:
   # mirror-goog-llvm-r596125-release，那是 LLVM 源码镜像，没有预编译产物）
   CLANG_BRANCH: mirror-goog-main-llvm-toolchain-source
   RSU_REPO: ReSukiSU/ReSukiSU
+  # 构建时主机标识：内核 banner 会显示为 build@114514
+  BUILD_USER: build
+  BUILD_HOST: '114514'
 
 jobs:
   build:
@@ -44,6 +47,21 @@ jobs:
           set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends flex bison bc libelf-dev libssl-dev dwarves lz4 zip unzip
+
+      - name: Set build host name (build@114514)
+        run: |
+          set -euo pipefail
+          # hostname 本身不允许 '@'，所以 runner 主机名用等价的合法写法，
+          # 并额外用 KBUILD_BUILD_USER/HOST 让内核 banner 精确显示 build@114514
+          sudo hostname 'build@114514' 2>/dev/null \
+            || sudo hostnamectl set-hostname 'build-114514' 2>/dev/null \
+            || true
+          echo "runner hostname now: $(hostname)"
+          {
+            echo "KBUILD_BUILD_USER=${BUILD_USER}"
+            echo "KBUILD_BUILD_HOST=${BUILD_HOST}"
+          } >> "$GITHUB_ENV"
+          echo "kernel banner will report: ${BUILD_USER}@${BUILD_HOST}"
 
       - name: Download clang-r596125
         run: |
@@ -190,6 +208,7 @@ jobs:
           {
             echo "### Rodin kernel build"
             echo "- kernel: \`${KERNEL_RELEASE}\` (Image.lz4 = lz4 legacy, magic 02214c18 verified)"
+            echo "- build host: build@114514"
             echo "- AK3 flashable zip: artifact \`Rodin-${KERNEL_RELEASE}-AnyKernel3\` (downloaded zip is directly flashable, kernel blob Image = lz4 legacy)"
             echo "- ReSukiSU manager (arm64-v8a only): artifacts \`rodin-${KERNEL_RELEASE}-manager\` / \`rodin-${KERNEL_RELEASE}-manager-spoofed\` from [CI run]($RSU_RUN_URL)"
           } >> "$GITHUB_STEP_SUMMARY"
