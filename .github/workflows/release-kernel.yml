@@ -1,7 +1,7 @@
 name: release-kernel
 
 # 手动触发：取最近一次成功的 build-kernel 构建产物，发布 release（默认 prerelease）。
-# 正文格式对齐 v1.2（内核版本 / 构建时间 / 构建工具链 / 变更 / 已经过实机测试 / Enjoy！）：
+# 正文格式对齐 v1.2（内核版本 / 构建时间 / 构建工具链 / 变更）：
 #   - 内核版本 / 构建时间 / 构建工具链 从 AK3 包内 Image 的 Linux banner 中提取，
 #     提取失败时回退到 artifact 名 / 构建记录时间
 #   - 变更内容优先用手动输入的 Markdown，留空时按「上一个 tag..本次构建 commit」自动生成
@@ -180,12 +180,20 @@ jobs:
 
       - name: Create release
         env:
-          GH_TOKEN: ${{ github.token }}
+          # 本仓库是 fork，org/repo 的 workflow 默认权限为只读，GITHUB_TOKEN 创建 release
+          # 会被拒（HTTP 403: Resource not accessible by integration），因此改用 PAT
+          PAT: ${{ secrets.GH_PAT }}
           IN_TAG: ${{ inputs.tag }}
           IN_TITLE: ${{ inputs.title }}
           IN_PRERELEASE: ${{ inputs.prerelease }}
         run: |
           set -euo pipefail
+          if [ -n "${PAT}" ]; then
+            export GH_TOKEN="${PAT}"
+          else
+            echo "::warning::secret GH_PAT not set, falling back to GITHUB_TOKEN"
+            export GH_TOKEN="${GITHUB_TOKEN}"
+          fi
           NOTES="$RUNNER_TEMP/notes.md"
           {
             printf '内核版本：%s\n' "$KREL"
@@ -194,9 +202,6 @@ jobs:
             printf '\n'
             printf '变更：\n'
             cat "$RUNNER_TEMP/changes.md"
-            printf '\n'
-            printf '已经过实机测试\n'
-            printf 'Enjoy！\n'
           } > "$NOTES"
           echo "----- release notes -----"
           cat "$NOTES"
