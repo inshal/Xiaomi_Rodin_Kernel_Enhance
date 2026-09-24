@@ -47,12 +47,12 @@
 
 - [`bsp-rodin-v-oss-upstream`](https://github.com/omajili-manbu/Xiaomi_Rodin_Kernel_Enhance/tree/bsp-rodin-v-oss-upstream) — 本分支，主构建分支：在小米官方 rodin 源码基础上叠加反向移植与增强，Releases 由此构建
 - [`bsp-rodin-v-oss`](https://github.com/omajili-manbu/Xiaomi_Rodin_Kernel_Enhance/tree/bsp-rodin-v-oss) — 小米官方 rodin 开源源码的原始镜像
-- [`bsp-rodin-v-oss-fix`](https://github.com/omajili-manbu/Xiaomi_Rodin_Kernel_Enhance/tree/bsp-rodin-v-oss-fix) — 早期 KSU+SUSFS 集成分支（已停止更新）
+- [`bsp-rodin-v-oss-fix`](https://github.com/omajili-manbu/Xiaomi_Rodin_Kernel_Enhance/tree/bsp-rodin-v-oss-fix) — 早期 6.6.30 KSU+SUSFS 集成分支（已停止更新）
 - [`bsp-rodin-c-rebase`](https://github.com/omajili-manbu/Xiaomi_Rodin_Kernel_Enhance/tree/bsp-rodin-c-rebase) — 6.18 内核基线移植（进行中）
 - [`bsp-rodin-c-port`](https://github.com/omajili-manbu/Xiaomi_Rodin_Kernel_Enhance/tree/bsp-rodin-c-port) — 在 6.18 内核上兼容 6.6 vendor 模块的移植分支（进行中）
 - [`rodin-device-special`](https://github.com/omajili-manbu/Xiaomi_Rodin_Kernel_Enhance/tree/rodin-device-special) — rodin 设备定制文件
-- [`rodin-lz4-v1.10.0-backport`](https://github.com/omajili-manbu/Xiaomi_Rodin_Kernel_Enhance/tree/rodin-lz4-v1.10.0-backport) — LZ4 v1.10.0 回移植
-- [`dash-w-oss`](https://github.com/omajili-manbu/Xiaomi_Rodin_Kernel_Enhance/tree/dash-w-oss) — REDMI Turbo 5 Max（Android W）内核
+- [`rodin-lz4-v1.10.0-backport`](https://github.com/omajili-manbu/Xiaomi_Rodin_Kernel_Enhance/tree/rodin-lz4-v1.10.0-backport) — LZ4 v1.10.0 回移植（暂停更新）
+- [`dash-w-oss`](https://github.com/omajili-manbu/Xiaomi_Rodin_Kernel_Enhance/tree/dash-w-oss) — REDMI Turbo 5 Max（Android W） 小米功能定制更新的参考内核
 
 ## 计划
 
