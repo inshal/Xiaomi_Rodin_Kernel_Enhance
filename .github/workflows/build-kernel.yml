@@ -131,6 +131,7 @@ jobs:
           # 不再打包外层 zip：artifact 下载下来本身就是可刷的 AK3 zip
 
       - name: Fetch matching ReSukiSU manager APKs
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -176,9 +177,12 @@ jobs:
               RUN_ID="$cand"; fetch_apks "$cand" && break || RUN_ID=""
             done
           fi
-          [ -n "$RUN_ID" ] || { echo "::error::no usable ReSukiSU Build Manager artifacts found"; exit 1; }
-          echo "RSU_RUN_URL=https://github.com/$RSU_REPO/actions/runs/$RUN_ID" >> "$GITHUB_ENV"
-          ls -la manager manager-spoofed
+          if [ -n "$RUN_ID" ]; then
+            echo "RSU_RUN_URL=https://github.com/$RSU_REPO/actions/runs/$RUN_ID" >> "$GITHUB_ENV"
+            ls -la manager manager-spoofed
+          else
+            echo "::warning::no ReSukiSU Build Manager artifacts found - kernel zip will be uploaded without manager APKs"
+          fi
 
       - name: Upload AnyKernel3 flashable zip
         uses: actions/upload-artifact@v4
@@ -190,18 +194,20 @@ jobs:
           if-no-files-found: error
 
       - name: Upload ReSukiSU manager APK (release, arm64-v8a)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: rodin-${{ env.KERNEL_RELEASE }}-manager
           path: manager/*.apk
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Upload ReSukiSU manager APK (spoofed, arm64-v8a)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: rodin-${{ env.KERNEL_RELEASE }}-manager-spoofed
           path: manager-spoofed/*.apk
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Build summary
         run: |
